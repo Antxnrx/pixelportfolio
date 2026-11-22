@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anton Raj Singh — The Coast Road</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0918; --night:#120c1f; --deep:#1d1631; --plum:#2b1f4e; --violet:#56356f; --grape:#6c3f88;
+  --mauve:#a2527f; --rose:#df7679; --coral:#ff5c6a; --tang:#f7a46e; --gold:#ffd84a; --sand:#ffd890;
+  --cream:#fff0d0; --orange:#f26b3a; --brick:#c94530; --sky:#8fd3ff; --green:#57e36f; --red:#ff4d4d;
+  --px:4px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--night)}
+body{margin:0;color:var(--cream);font:400 22px/1.25 'VT323',monospace;overflow-x:hidden}
+img,canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+a{color:var(--gold)}
+h2,h3,.sil{font-family:'Silkscreen',monospace;font-weight:700;letter-spacing:.03em}
+::selection{background:var(--gold);color:var(--ink)}
+.box{background:var(--ink);border:var(--px) solid var(--cream);box-shadow:var(--px) var(--px) 0 #000}
+.box.y{border-color:var(--gold)}
+.chip{display:inline-block;font:400 14px/1 'Silkscreen',monospace;padding:6px 8px 4px;background:var(--plum);color:var(--sand);border:2px solid var(--violet);margin:0 6px 6px 0}
+
+/* ---------- Dashboard nav ---------- */
+.dash{position:fixed;inset:0 0 auto 0;z-index:50;background:var(--ink);border-bottom:var(--px) solid var(--gold)}
+.dash-row{display:flex;align-items:center;gap:14px;padding:8px 14px}
+.logo{font:700 18px/1 'Silkscreen',monospace;background:var(--gold);color:var(--ink);padding:7px 8px 5px;text-decoration:none;white-space:nowrap}
+.gears{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap}
+.gears a{font:400 14px/1 'Silkscreen',monospace;color:var(--cream);text-decoration:none;padding:6px 8px 4px;border:2px solid var(--violet);background:var(--deep);white-space:nowrap}
+.gears a b{color:var(--gold);margin-right:6px}
+.gears a.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.gears a.on b{color:var(--ink)}
+.odo{font:400 14px/1 'Silkscreen',monospace;color:var(--sky);white-space:nowrap}
+.odo span{display:inline-block;background:#000;color:var(--cream);padding:4px 3px 2px;margin-left:1px;min-width:13px;text-align:center}
+.strip{position:relative;height:16px;background:#2a2242;overflow:hidden;border-top:2px solid #463a66}
+.strip .dashes{position:absolute;left:0;right:-64px;top:7px;height:2px;background:repeating-linear-gradient(90deg,var(--cream) 0 16px,transparent 16px 32px);animation:dash 0.6s linear infinite}
+@keyframes dash{to{transform:translateX(-32px)}}
+.strip .mini{position:absolute;top:1px;left:0;width:44px;height:14px;transition:left .15s linear}
+@media (max-width:820px){ .gears a span{display:none} .odo{display:none} .gears{justify-content:flex-end} }
+
+/* ---------- Hero ---------- */
+#start{position:relative;height:100vh;min-height:520px;overflow:hidden}
+#hero{position:absolute;inset:0;width:100%;height:100%}
+#start::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.08) 0 1px,transparent 1px 3px)}
+.hud{position:absolute;z-index:2}
+.h-tag{left:0;top:104px;padding:6px 16px 4px 12px;border-left:none;font:700 22px/1 'Silkscreen',monospace;color:var(--gold)}
+.h-tag .blk{display:flex;gap:6px;margin-top:8px}
+.h-tag .blk i{width:16px;height:7px;background:var(--gold)}
+.h-rpm{right:0;top:104px;padding:7px 12px 7px 12px;border-right:none;font:400 20px/1 'Silkscreen',monospace}
+.h-rpm b{color:var(--gold)}
+.bars{display:flex;gap:3px;margin-top:7px}
+.bars i{width:8px;height:8px;background:#2f2848}
+.bars i.on{background:var(--green)} .bars i.on.r{background:var(--red)}
+.h-name{left:clamp(16px,6vw,90px);top:clamp(170px,26vh,260px);padding:16px 26px 12px;font:700 clamp(40px,7.4vw,96px)/1 'Silkscreen',monospace}
+.h-name .y{color:var(--gold)}
+.h-sub{left:clamp(16px,6vw,90px);top:calc(clamp(170px,26vh,260px) + clamp(118px,17vw,232px));padding:8px 14px 6px;font:400 clamp(14px,1.6vw,20px)/1.2 'Silkscreen',monospace;color:var(--gold);max-width:calc(100vw - 32px)}
+.h-cue{left:50%;bottom:22px;transform:translateX(-50%);padding:8px 14px 6px;font:400 15px/1 'Silkscreen',monospace;color:var(--gold);animation:blink 1.2s steps(2) infinite;white-space:nowrap}
+@keyframes blink{50%{opacity:.25}}
+
+/* ---------- Page body sky ---------- */
+main{position:relative;background-color:var(--deep);background-repeat:no-repeat;background-size:100% 100%}
+.stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.stars i{position:absolute;width:4px;height:4px;background:var(--cream);animation:tw 2.4s steps(3) infinite}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.2}}
+section.stop{position:relative;padding:120px clamp(16px,5vw,72px) 90px;max-width:1240px;margin:0 auto}
+.sign{display:flex;align-items:flex-end;gap:14px;margin-bottom:34px;flex-wrap:wrap}
+.sign h2{margin:0;font-size:clamp(34px,5vw,58px);line-height:1;padding:14px 20px 10px;background:var(--ink);border:var(--px) solid var(--cream);box-shadow:6px 6px 0 #000}
+.sign h2 em{font-style:normal;color:var(--gold)}
+.sign .gear{font:700 16px/1 'Silkscreen',monospace;background:var(--gold);color:var(--ink);padding:8px 10px 6px}
+.sign p{margin:0;flex-basis:100%;color:var(--sand);font-size:24px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .5s steps(5),transform .5s steps(5)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- Driver's licence ---------- */
+.licence{display:grid;grid-template-columns:auto 1fr;gap:26px;padding:24px;position:relative;max-width:900px}
+.licence:before{content:"COAST ROAD MOTOR AUTHORITY · DRIVER LICENCE";position:absolute;left:-4px;right:-4px;top:-34px;background:var(--gold);color:var(--ink);font:700 14px/1 'Silkscreen',monospace;padding:9px 12px 7px;border:4px solid var(--gold)}
+#avatar{width:176px;height:208px;border:var(--px) solid var(--gold);background:var(--plum)}
+.lic-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 22px;align-content:start}
+.lic-f div small{display:block;font:400 13px/1 'Silkscreen',monospace;color:var(--sky);margin-bottom:4px}
+.lic-f div{font-size:26px}
+.lic-bio{grid-column:1/-1;font-size:24px;color:var(--sand);border-top:4px dashed var(--violet);padding-top:16px;margin:0}
+.barcode{grid-column:1/-1;height:28px;background:repeating-linear-gradient(90deg,var(--cream) 0 4px,transparent 4px 8px,var(--cream) 8px 16px,transparent 16px 20px,var(--cream) 20px 24px,transparent 24px 32px)}
+@media (max-width:640px){.licence{grid-template-columns:1fr}#avatar{width:140px;height:166px}}
+
+/* ---------- Engine ---------- */
+.engine{padding:22px;display:grid;gap:18px}
+.fo{display:flex;gap:6px;align-items:center;font:700 22px/1 'Silkscreen',monospace}
+.fo span{background:#000;padding:8px 12px 6px;border:2px solid var(--violet)}
+.fo span.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.fo .lab{font:400 14px/1 'Silkscreen',monospace;color:var(--sky);margin-right:10px;background:none;border:none;padding:0}
+.fo button{margin-left:auto;font:700 16px/1 'Silkscreen',monospace;background:var(--coral);color:#fff;border:4px solid var(--cream);padding:10px 14px 8px;cursor:pointer;box-shadow:4px 4px 0 #000}
+.fo button:active{transform:translate(4px,4px);box-shadow:none}
+.block{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;background:var(--orange);padding:14px;border:var(--px) solid #000;position:relative}
+.block:before{content:"";position:absolute;left:-4px;right:-4px;top:-22px;height:22px;background:var(--brick);border:4px solid #000;border-bottom:none}
+.cyl{position:relative;height:220px;background:#1a1230;border:4px solid #000;overflow:hidden;cursor:pointer}
+.cyl .no{position:absolute;left:8px;top:6px;z-index:3;font:700 18px/1 'Silkscreen',monospace;background:var(--cream);color:var(--ink);padding:5px 7px 3px}
+.cyl .boom{position:absolute;left:0;top:0;width:100%;height:60px;opacity:0;z-index:1}
+.cyl .pis{position:absolute;left:10%;right:10%;height:46px;background:#c8cde4;border:4px solid #000;z-index:2}
+.cyl .pis:after{content:"";position:absolute;left:10%;right:10%;top:8px;height:4px;background:#8d90b0;box-shadow:0 8px 0 #8d90b0}
+.cyl .rod{position:absolute;left:calc(50% - 10px);width:20px;height:150px;background:var(--gold);border:4px solid #000;z-index:1}
+.cyl .valve{position:absolute;top:0;width:10px;height:22px;background:var(--cream);border:3px solid #000;z-index:3}
+.cyl:hover,.cyl.sel{outline:4px solid var(--gold);outline-offset:-4px}
+.crank{height:34px;background:#3a3050;border:4px solid #000;position:relative;overflow:hidden}
+.crank i{position:absolute;top:6px;width:30px;height:14px;background:#6a6f95;border:3px solid #000}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.spec{padding:14px;border:4px solid var(--violet);background:var(--deep);transition:border-color .2s steps(2)}
+.spec h3{margin:0 0 10px;font-size:18px;color:var(--gold)}
+.spec.sel{border-color:var(--gold);background:var(--plum)}
+@media (max-width:820px){.block,.specs{grid-template-columns:repeat(2,1fr)} .cyl{height:170px}}
+
+/* ---------- Pit stops (billboards) ---------- */
+.boards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:40px 26px}
+.bb{position:relative;padding-bottom:58px}
+.bb .face{position:relative;background:var(--ink);border:var(--px) solid var(--cream);box-shadow:6px 6px 0 #000;transition:transform .15s steps(2)}
+.bb:hover .face{transform:translate(-3px,-3px)}
+.bb .lights{display:flex;justify-content:space-around;position:absolute;left:10px;right:10px;top:-14px}
+.bb .lights i{width:14px;height:10px;background:#5a4a2a;border:3px solid #000}
+.bb:hover .lights i{background:var(--sand);animation:blink .5s steps(2) infinite}
+.bb canvas{display:block;width:100%;aspect-ratio:16/9;border-bottom:4px solid var(--cream)}
+.bb .txt{padding:12px 14px 12px}
+.bb h3{margin:0 0 6px;font-size:22px}
+.bb p{margin:0 0 10px;color:var(--sand)}
+.bb .km{position:absolute;right:-10px;top:-16px;z-index:2;background:var(--green);color:var(--ink);font:700 13px/1 'Silkscreen',monospace;padding:6px 7px 4px;border:3px solid #000}
+.bb .posts{position:absolute;bottom:0;left:22%;right:22%;height:58px;display:flex;justify-content:space-between}
+.bb .posts i{width:12px;background:#3a3050;border:3px solid #000;border-top:none}
+.bb .tagline{font:400 12px/1 'Silkscreen',monospace;color:var(--sky);margin-bottom:6px;display:block}
+
+/* ---------- Route log ---------- */
+.route{position:relative;padding:20px 0}
+.route .road{position:absolute;left:50%;top:0;bottom:0;width:64px;margin-left:-32px;background:#2a2242;border-left:4px solid var(--cream);border-right:4px solid var(--cream)}
+.route .road:after{content:"";position:absolute;left:28px;width:8px;top:0;bottom:0;background:repeating-linear-gradient(180deg,var(--sand) 0 22px,transparent 22px 44px);animation:rd 0.8s linear infinite}
+@keyframes rd{to{background-position:0 44px}}
+#routeCar{position:absolute;left:50%;width:30px;margin-left:-15px;top:0;z-index:3}
+.leg{position:relative;width:calc(50% - 64px);margin:0 0 30px;padding:16px 18px}
+.leg:nth-of-type(odd){margin-left:auto}
+.leg .mk{font:700 14px/1 'Silkscreen',monospace;background:var(--green);color:var(--ink);padding:6px 8px 4px;display:inline-block;margin-bottom:8px;border:3px solid #000}
+.leg h3{margin:0 0 6px;font-size:20px}
+.leg p{margin:0;color:var(--sand)}
+.leg:before{content:"";position:absolute;top:22px;width:34px;height:4px;background:var(--gold)}
+.leg:nth-of-type(odd):before{left:-38px} .leg:nth-of-type(even):before{right:-38px}
+.leg.next{border-style:dashed}
+@media (max-width:720px){.route .road{left:22px;margin-left:0;width:40px}.route .road:after{left:16px}#routeCar{left:37px}.leg,.leg:nth-of-type(odd){width:auto;margin-left:76px}.leg:before{display:none}}
+.odom{display:inline-flex;gap:3px;font:700 34px/1 'Silkscreen',monospace;padding:10px;margin-bottom:26px}
+.odom span{background:#000;padding:8px 6px 6px;min-width:34px;text-align:center;border:2px solid var(--violet)}
+.odom span:last-of-type{background:var(--cream);color:var(--ink)}
+.odom small{font:400 14px/1 'Silkscreen',monospace;color:var(--sky);align-self:flex-end;margin-left:8px}
+
+/* ---------- Garage ---------- */
+.garage{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:18px;padding-top:62px;position:relative}
+.garage:before{content:"AEXIZ SOLUTIONS LLP · BANGALORE";position:absolute;left:18px;right:18px;top:14px;text-align:center;background:var(--coral);color:#fff;font:700 18px/1 'Silkscreen',monospace;padding:9px 0 7px;border:4px solid #000;animation:neon 2.4s steps(1) infinite}
+@keyframes neon{0%,62%,70%,100%{background:var(--coral)}64%,68%{background:#7a2a3a}}
+.bay{position:relative;height:250px;background:#000;border:4px solid var(--cream);overflow:hidden}
+.bay .inside{position:absolute;inset:0;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(#2b1f4e,#120c1f)}
+.bay .inside h3{margin:0 0 6px;color:var(--gold);font-size:20px}
+.bay .inside p{margin:0;color:var(--sand);font-size:21px}
+.bay .ico{font:700 40px/1 'Silkscreen',monospace;color:var(--sky);margin-bottom:auto}
+.bay .door{position:absolute;inset:0;background:repeating-linear-gradient(180deg,#6a6f95 0 18px,#3a3050 18px 22px);transition:transform .6s steps(8);display:flex;align-items:center;justify-content:center;font:700 26px/1 'Silkscreen',monospace;color:var(--ink)}
+.bay:hover .door,.bay.open .door{transform:translateY(-88%)}
+.bay .door span{background:var(--gold);padding:6px 10px 4px;border:3px solid #000}
+.cta{display:inline-block;margin-top:24px;font:700 18px/1 'Silkscreen',monospace;background:var(--gold);color:var(--ink);text-decoration:none;padding:14px 18px 12px;border:4px solid #000;box-shadow:6px 6px 0 #000}
+.cta:hover{transform:translate(2px,2px);box-shadow:4px 4px 0 #000}
+@media (max-width:820px){.garage{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- Arrival ---------- */
+#arrive{min-height:100vh;padding-bottom:calc(46vh + 20px)}
+#sunrise{position:absolute;left:0;bottom:0;width:100%;height:46vh;pointer-events:none;z-index:1}
+.station{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;position:relative;z-index:2}
+.pump{width:190px;padding:14px;background:var(--coral);border:4px solid #000;box-shadow:6px 6px 0 #000;position:relative}
+.pump .scr{background:#000;border:4px solid var(--cream);padding:10px;font:700 16px/1.4 'Silkscreen',monospace;color:var(--green)}
+.pump .scr b{color:var(--gold);font-size:22px}
+.pump .nozzle{position:absolute;right:-34px;top:40px;width:30px;height:70px;border:6px solid #000;border-left:none;border-bottom:none}
+.pump .base{height:60px;margin-top:12px;background:#a03040;border:4px solid #000}
+.contact{padding:24px}
+.contact h3{margin:0 0 10px;font-size:clamp(26px,4vw,42px)}
+.contact h3 em{font-style:normal;color:var(--gold)}
+.contact p{margin:0 0 6px;color:var(--sand);font-size:24px}
+footer{position:absolute;z-index:2;left:0;right:0;bottom:0;text-align:center;font:400 13px/1.6 'Silkscreen',monospace;color:var(--cream);padding:0 16px 18px;text-shadow:2px 2px 0 #000}
+@media (max-width:640px){.station{grid-template-columns:1fr}.pump{width:160px}}
+
+/* ---------- Fixed speedo ---------- */
+.speedo{position:fixed;right:14px;bottom:14px;z-index:40;width:96px;height:96px;pointer-events:none}
+.speedo canvas{width:96px;height:96px}
+.speedo b{position:absolute;left:0;right:0;top:52px;text-align:center;font:700 18px/1 'Silkscreen',monospace;color:var(--gold);text-shadow:2px 2px 0 #000}
+.speedo small{position:absolute;right:100px;bottom:8px;font:400 13px/1 'Silkscreen',monospace;background:var(--ink);color:#bfe6ff;border:3px solid var(--sky);padding:4px 6px 2px;white-space:nowrap}
+@media (max-width:640px){.speedo{width:64px;height:64px;right:10px;bottom:10px}.speedo canvas{width:64px;height:64px}.speedo b{top:35px;font-size:13px}.speedo small{display:none}.h-cue{left:16px;transform:none}footer{text-align:left;padding-right:84px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="dash">
+  <div class="dash-row">
+    <a class="logo" href="#start">A.R.S</a>
+    <nav class="gears" id="gears">
+      <a href="#start"><b>1</b><span>START</span></a>
+      <a href="#driver"><b>2</b><span>DRIVER</span></a>
+      <a href="#engine"><b>3</b><span>ENGINE</span></a>
+      <a href="#pitstops"><b>4</b><span>PIT STOPS</span></a>
+      <a href="#route"><b>5</b><span>ROUTE</span></a>
+      <a href="#garage"><b>6</b><span>GARAGE</span></a>
+      <a href="#arrive"><b>7</b><span>ARRIVE</span></a>
+    </nav>
+    <div class="odo">ODO<span id="o0">0</span><span id="o1">0</span><span id="o2">0</span><span id="o3">0</span> KM</div>
+  </div>
+  <div class="strip"><div class="dashes"></div><canvas class="mini" id="mini" width="22" height="7"></canvas></div>
+</header>
+
+<section id="start" data-gear="1">
+  <canvas id="hero" aria-label="Pixel-art sunset drive along a coastal road"></canvas>
+  <div class="hud box y h-tag">NOW DRIVING<div class="blk"><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="hud box h-rpm"><b id="rpm">2,400</b> RPM<div class="bars" id="bars"></div></div>
+  <div class="hud box h-name"><div>ANTON</div><div class="y">RAJ SINGH</div></div>
+  <div class="hud box y h-sub">FOUNDER · AEXIZ SOLUTIONS — AI SYSTEMS, SOFTWARE &amp; DESIGN. BANGALORE.</div>
+  <div class="hud box y h-cue">▼ SCROLL = THROTTLE ▼</div>
+</section>
+
+<main id="main">
+  <div class="stars" id="stars"></div>
+
+  <section class="stop" id="driver" data-gear="2">
+    <div class="sign reveal"><span class="gear">GEAR 2</span><h2>THE <em>DRIVER</em></h2><p>Who's behind the wheel.</p></div>
+    <div class="box licence reveal">
+      <canvas id="avatar" width="44" height="52" aria-label="Pixel portrait"></canvas>
+      <div class="lic-f">
+        <div><small>NAME</small>ANTON RAJ SINGH</div>
+        <div><small>CLASS</small>FOUNDER &amp; CEO, AEXIZ</div>
+        <div><small>HOME GARAGE</small>BANGALORE, IN</div>
+        <div><small>LICENSED SINCE</small>~2021 · SELF-TAUGHT</div>
+        <div><small>SCHOOL</small>BTECH · VIJAYBHOOMI UNIV.</div>
+        <div><small>VALID THRU</small>CLASS OF 2027</div>
+        <p class="lic-bio">Full-stack developer who started out in graphic design, video editing and multimedia, and now builds AI systems, products and automation for clients and for himself. Drawn to deep-learning theory, AI architecture and the philosophy of mind, and wants things shipped in days, not quarters.</p>
+        <div class="barcode"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="engine" data-gear="3">
+    <div class="sign reveal"><span class="gear">GEAR 3</span><h2>UNDER THE <em>HOOD</em></h2><p>Four cylinders, one firing order. Each one is a skill set. Click a cylinder to inspect it.</p></div>
+    <div class="box engine reveal">
+      <div class="fo"><span class="lab">FIRING ORDER</span><span data-c="0">1</span><span data-c="2">3</span><span data-c="3">4</span><span data-c="1">2</span><button id="rev">REV IT ▲</button></div>
+      <div class="block" id="block"></div>
+      <div class="crank" id="crank"></div>
+      <div class="specs" id="specs">
+        <div class="spec"><h3>01 · AI SYSTEMS</h3><span class="chip">LANGGRAPH</span><span class="chip">MULTI-AGENT</span><span class="chip">MEMORY LAYERS</span><span class="chip">RBAC / ABAC</span></div>
+        <div class="spec"><h3>02 · FULL-STACK</h3><span class="chip">NEXT.JS</span><span class="chip">TYPESCRIPT</span><span class="chip">FASTIFY</span><span class="chip">PRISMA</span><span class="chip">POSTGRESQL</span></div>
+        <div class="spec"><h3>03 · DESIGN &amp; MEDIA</h3><span class="chip">UI DESIGN</span><span class="chip">GRAPHIC DESIGN</span><span class="chip">VIDEO EDITING</span><span class="chip">CSS MOTION</span></div>
+        <div class="spec"><h3>04 · INFRA &amp; WEB3</h3><span class="chip">OCI</span><span class="chip">GOOGLE CLOUD</span><span class="chip">CADDY · PM2</span><span class="chip">APTOS</span><span class="chip">ZCASH</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="pitstops" data-gear="4">
+    <div class="sign reveal"><span class="gear">GEAR 4</span><h2>PIT <em>STOPS</em></h2><p>Things built along the way: one billboard per project.</p></div>
+    <div class="boards" id="boards"></div>
+  </section>
+
+  <section class="stop" id="route" data-gear="5">
+    <div class="sign reveal"><span class="gear">GEAR 5</span><h2>ROUTE <em>LOG</em></h2><p>The trip so far, logged by odometer.</p></div>
+    <div class="box odom reveal" id="odom"><span>0</span><span>0</span><span>0</span><span>0</span><small>KM DRIVEN</small></div>
+    <div class="route" id="routeWrap">
+      <div class="road"></div>
+      <canvas id="routeCar" width="11" height="22"></canvas>
+      <div class="box leg reveal"><span class="mk">KM 000</span><h3>STARTED FREELANCING</h3><p>Self-taught. Graphic design, video editing and multimedia first, then code.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 120</span><h3>CLIENT WEBSITES</h3><p>MY SALON Koramangala, Greenr Cafe Delhi, Crest Painting Co. Toronto, ARTÉ Studio and more.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 240</span><h3>GOOGLE CLOUD ARCADE FACILITATOR</h3><p>Three cycles, 1,000+ students guided through Google Cloud.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 360</span><h3>INDIAN ARMY MARATHON</h3><p>Built the event's ticketing platform.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 480</span><h3>FOUNDED AEXIZ SOLUTIONS</h3><p>A Bangalore studio for AI systems, software, automation and design.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 600</span><h3>FREE SOCIETY HACK 2026</h3><p>Built the UI for Mirage, a Zcash send guard, in the Privacy track.</p></div>
+      <div class="box y leg next reveal"><span class="mk">NEXT EXIT</span><h3>BTECH · CLASS OF 2027</h3><p>VijayBhoomi University. The road keeps going.</p></div>
+    </div>
+  </section>
+
+  <section class="stop" id="garage" data-gear="6">
+    <div class="sign reveal"><span class="gear">GEAR 6</span><h2>THE <em>GARAGE</em></h2><p>Where client builds get done. Hover a bay to open the door.</p></div>
+    <div class="box garage reveal">
+      <div class="bay"><div class="inside"><div class="ico">◆</div><h3>AI SYSTEMS</h3><p>Agents, retrieval, memory and workflow automation.</p></div><div class="door"><span>BAY 1</span></div></div>
+      <div class="bay"><div class="inside"><div class="ico">&lt;/&gt;</div><h3>SOFTWARE</h3><p>Web apps, PWAs and platforms, from schema to deploy.</p></div><div class="door"><span>BAY 2</span></div></div>
+      <div class="bay"><div class="inside"><div class="ico">⚙</div><h3>AUTOMATION</h3><p>Pipelines that take repetitive work off your hands.</p></div><div class="door"><span>BAY 3</span></div></div>
+      <div class="bay"><div class="inside"><div class="ico">✎</div><h3>DESIGN</h3><p>Brand, UI, labels, motion and video.</p></div><div class="door"><span>BAY 4</span></div></div>
+    </div>
+    <a class="cta" href="https://aexiz.com" target="_blank" rel="noopener">VISIT AEXIZ.COM ▶</a>
+  </section>
+
+  <section class="stop" id="arrive" data-gear="7">
+    <div class="sign reveal"><span class="gear">GEAR 7</span><h2>YOU'VE <em>ARRIVED</em></h2><p>Last stop: the fuel station. Got a project that needs a driver?</p></div>
+    <div class="station reveal">
+      <div class="pump"><div class="scr">LITRES<br><b id="lit">00.00</b><br>IDEAS<br><b id="ide">000</b></div><div class="nozzle"></div><div class="base"></div></div>
+      <div class="box contact">
+        <h3>LET'S BUILD <em>SOMETHING FAST.</em></h3>
+        <p>Open for AI systems, product builds and design work through Aexiz.</p>
+        <p>Find the studio at <a href="https://aexiz.com" target="_blank" rel="noopener">aexiz.com</a></p>
+        <a class="cta" href="https://aexiz.com" target="_blank" rel="noopener">FUEL UP A PROJECT ▶</a>
+      </div>
+    </div>
+  </section>
+  <canvas id="sunrise"></canvas>
+  <footer>© ANTON RAJ SINGH · BUILT IN BANGALORE · NO PIXELS WERE ANTI-ALIASED</footer>
+</main>
+
+<div class="speedo" aria-hidden="true"><small>KM/H</small><canvas id="speedo" width="48" height="48"></canvas><b id="kmh">0</b></div>
+
+<script>
+(() => {
+// ================= shared pixel helpers (same method as the sun) =================
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const B4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+const bay = (x,y) => (B4[y&3][x&3] + .5) / 16;
+const lerp = (a,b,t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// dithered vertical gradient; stops are [fraction, '#hex']
+function ditherFill(img, w, y0, y1, stops, steps, totalH, x0 = 0, x1 = w) {
+  const s = stops.map(([f,c]) => [f*totalH, hex(c)]);
+  for (let y = y0; y < y1; y++) {
+    let i = 0; while (i < s.length - 2 && y >= s[i+1][0]) i++;
+    const t = Math.min(1, Math.max(0, (y - s[i][0]) / Math.max(1e-6, s[i+1][0] - s[i][0])));
+    for (let x = x0; x < x1; x++) {
+      const q = Math.min(1, Math.floor(t*steps + bay(x,y)) / steps);
+      const c = lerp(s[i][1], s[i+1][1], q), k = (y*w + x)*4;
+      img.data[k]=c[0]; img.data[k+1]=c[1]; img.data[k+2]=c[2]; img.data[k+3]=255;
+    }
+  }
+}
+// striped retro sun drawn into an ImageData
+function drawSun(img, w, h, cx, cy, r, clipY, cols = ['#fff3b0','#ffdf7a','#ffc062','#ff9a58','#ff5c6a']) {
+  const C = cols.map(hex), halo = hex('#ffe3a6');
+  for (let y = Math.max(0, cy - r - 16); y < Math.min(clipY, cy + r + 16); y++)
+    for (let x = Math.max(0, cx - r - 16); x < Math.min(w, cx + r + 16); x++) {
+      const d = Math.hypot(x - cx, y - cy), k = (y*w + x)*4;
+      if (d <= r) {
+        const st = y - (cy - r*.15);
+        if (st > 0) { const gap = 1 + Math.floor(st / (r/4)); if (st % Math.max(6, Math.round(r/4.2)) < gap) continue; }
+        const t = (y - (cy - r)) / (2*r);
+        const c = C[Math.min(C.length-1, Math.max(0, Math.floor(t*C.length + bay(x,y) - .5)))];
+        img.data[k]=c[0]; img.data[k+1]=c[1]; img.data[k+2]=c[2]; img.data[k+3]=255;
+      } else if (d < r + 16) {
+        const f = Math.floor((1 - (d - r)/16)*3 + bay(x,y)) / 3 * .3;
+        const c = lerp([img.data[k],img.data[k+1],img.data[k+2]], halo, f);
+        img.data[k]=c[0]; img.data[k+1]=c[1]; img.data[k+2]=c[2];
+      }
+    }
+}
+function speckTile(h, base, specks, density) {
+  const t = document.createElement('canvas'); t.width = 64; t.height = Math.max(1,h);
+  const g = t.getContext('2d'); g.fillStyle = base; g.fillRect(0,0,64,h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < 64; x++) if (Math.random() < density) { g.fillStyle = specks[(Math.random()*specks.length)|0]; g.fillRect(x,y,1,1); }
+  return t;
+}
+
+// ================= the car sprite (shared everywhere) =================
+const PAL = ['#ffd27a','#ff9a4a','#f26b3a','#e8384e','#c94530','#9ed2ee','#e8f7ff','#24325e','#fff0d0','#3a1f3a','#fff6c8','#ff3b5c','#1a1426','#7a2a2a'].map(hex);
+function makeCar() {
+  const W = 104, H = 37, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const poly = (pts, col) => { g.fillStyle = col; g.beginPath(); g.moveTo(...pts[0]); pts.slice(1).forEach(p => g.lineTo(...p)); g.closePath(); g.fill(); };
+  const line = (x1,y1,x2,y2,col,w=1) => { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke(); };
+  const body = [[2,27],[2,18],[9,15],[30,13],[37,5],[63,4],[79,12],[99,16],[102,19],[102,25],[99,29],[2,29]];
+  poly(body, '#f26b3a');
+  // paint uses the sun's ramp: gold up top, hot pink-red at the sills (dithered after)
+  const id0 = g.getImageData(0,0,W,H), d0 = id0.data;
+  const ramp = [[4,'#ffd27a'],[13,'#ff9a4a'],[21,'#f26b3a'],[29,'#e8384e']].map(([y,c]) => [y, hex(c)]);
+  for (let y = 0; y < H; y++) {
+    let i = 0; while (i < ramp.length - 2 && y >= ramp[i+1][0]) i++;
+    const t = Math.min(1, Math.max(0, (y - ramp[i][0]) / (ramp[i+1][0] - ramp[i][0])));
+    for (let x = 0; x < W; x++) {
+      const k = (y*W + x)*4; if (d0[k+3] < 110) continue;
+      const q = Math.floor(t*2 + bay(x,y)) / 2;
+      const col = q >= 1 ? ramp[i+1][1] : q <= 0 ? ramp[i][1] : (bay(x+1,y) < .5 ? ramp[i][1] : ramp[i+1][1]);
+      d0[k]=col[0]; d0[k+1]=col[1]; d0[k+2]=col[2]; d0[k+3]=255;
+    }
+  }
+  g.putImageData(id0, 0, 0);
+  poly([[38,7],[61,6],[75,12],[33,13]], '#24325e');
+  line(46,7,42,12.5,'#9ed2ee',2); line(59,7,56,12.5,'#9ed2ee',1);
+  g.fillStyle = '#ff9a4a'; g.fillRect(52,6,2,7);
+  g.fillStyle = '#c94530'; g.fillRect(55,13,1,10);
+  g.fillStyle = '#fff0d0'; g.fillRect(6,19,92,1); g.fillRect(6,21,92,1);
+  for (let i = 0; i < 3; i++) line(71+i*5,25,74+i*5,19.5,'#3a1f3a',1.6);
+  g.fillStyle = '#fff6c8'; g.fillRect(99,18,3,2);
+  g.fillStyle = '#ff3b5c'; g.fillRect(2,18,3,3);
+  g.fillStyle = '#1a1426';
+  for (const wx of [24, 82]) { g.beginPath(); g.arc(wx, 29, 10.5, Math.PI, 0); g.fill(); }
+  g.fillStyle = '#7a2a2a'; g.fillRect(2,29,100,1);
+  const id = g.getImageData(0,0,W,H), d = id.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i+3] < 110) { d[i+3] = 0; continue; }
+    let best = 0, bd = 1e9;
+    for (let p = 0; p < PAL.length; p++) { const a = d[i]-PAL[p][0], b = d[i+1]-PAL[p][1], e = d[i+2]-PAL[p][2], dd = a*a+b*b+e*e; if (dd < bd) { bd = dd; best = p; } }
+    d[i]=PAL[best][0]; d[i+1]=PAL[best][1]; d[i+2]=PAL[best][2]; d[i+3]=255;
+  }
+  g.putImageData(id, 0, 0);
+  return c;
+}
+const CAR = makeCar();
+function pixelCircle(ctx, cx, cy, r, col) { ctx.fillStyle = col; for (let dy = -r; dy <= r; dy++) { const w = Math.floor(Math.sqrt(r*r + r*.8 - dy*dy)); ctx.fillRect(cx - w, cy + dy, w*2 + 1, 1); } }
+function drawWheel(ctx, cx, cy, ang, fast) {
+  pixelCircle(ctx, cx, cy, 8, '#18121f');
+  if (fast) { pixelCircle(ctx, cx, cy, 5, '#a9aecb'); pixelCircle(ctx, cx, cy, 3, '#c8cde4'); }
+  else {
+    pixelCircle(ctx, cx, cy, 5, '#c8cde4'); ctx.fillStyle = '#5a5d7a';
+    for (let k = 0; k < 5; k++) { const a = ang + k*Math.PI*2/5; for (let rr = 1; rr <= 4; rr++) ctx.fillRect(Math.round(cx + Math.cos(a)*rr), Math.round(cy + Math.sin(a)*rr), 1, 1); }
+  }
+  ctx.fillStyle = '#e04848'; ctx.fillRect(cx, cy, 1, 1);
+}
+
+// ================= scroll "throttle" =================
+let lastY = scrollY, vel = 0, throttle = 0;
+addEventListener('scroll', () => { const dy = Math.abs(scrollY - lastY); lastY = scrollY; vel = Math.min(80, vel + dy); }, { passive: true });
+
+// ================= HERO SCENE =================
+const hero = document.getElementById('hero'), hctx = hero.getContext('2d');
+let W, H, HZ, SEA, RT, RE, sky, sea, roadTile, shTile, farH = [], nearH = [];
+let sparkles = [], streaks = [], puffs = [];
+const clouds = [
+  { x: .05, y: .1, s: [[0,6,40,4],[6,3,14,3],[10,0,8,3],[22,2,10,4],[30,5,9,2]] },
+  { x: .55, y: .2, s: [[0,4,26,3],[5,1,10,3],[16,2,6,2]] },
+  { x: .8,  y: .06, s: [[0,3,30,3],[8,0,12,3],[22,1,6,2]] },
+  { x: .32, y: .3, s: [[0,3,22,3],[6,0,10,3]] },
+];
+function heroLayout() {
+  const cw = hero.clientWidth || innerWidth, ch = hero.clientHeight || innerHeight;
+  W = cw < 700 ? 200 : 320;
+  H = Math.max(120, Math.round(W * ch / cw));
+  hero.width = W; hero.height = H; hctx.imageSmoothingEnabled = false;
+  HZ = Math.round(H * (cw < 700 ? .6 : .58)); SEA = HZ + Math.round(H*.11); RT = SEA + 8; RE = Math.round(H*.95);
+  sky = document.createElement('canvas'); sky.width = W; sky.height = HZ;
+  const sctx = sky.getContext('2d'), img = sctx.createImageData(W, HZ);
+  ditherFill(img, W, 0, HZ, [[0,'#2b1f4e'],[.32,'#56356f'],[.56,'#a2527f'],[.76,'#df7679'],[.9,'#f7a46e'],[1,'#ffd890']], 3, HZ);
+  const r = Math.round(Math.min(W*.2, HZ*.42));
+  drawSun(img, W, HZ, Math.round(W*(cw < 700 ? .62 : .7)), HZ - Math.round(r*.55), r, HZ);
+  sctx.putImageData(img, 0, 0);
+  sea = document.createElement('canvas'); sea.width = W; sea.height = SEA - HZ;
+  const s2 = sea.getContext('2d'), im2 = s2.createImageData(W, SEA - HZ);
+  ditherFill(im2, W, 0, SEA - HZ, [[0,'#c86f88'],[.3,'#904f86'],[.7,'#5b3a78'],[1,'#3a2a60']], 3, SEA - HZ);
+  s2.putImageData(im2, 0, 0);
+  roadTile = speckTile(RE - RT, '#2a2242', ['#352c52','#211a37','#3d3360'], .07);
+  shTile = speckTile(H - RE, '#1d1631', ['#2b2245','#150f25','#3a2d55'], .12);
+  farH = []; nearH = [];
+  for (let x = 0; x < 640; x++) {
+    const a = x/640*Math.PI*2;
+    farH.push(Math.max(0, Math.round(2 + 2*Math.sin(a*8) + 3*Math.sin(a*3 + 1) + Math.sin(a*21))));
+    const s = Math.sin(a*4 + .4); nearH.push(s > .6 ? Math.round((s - .6)*40) : 0);
+  }
+  sparkles = Array.from({length: Math.round(W*.3)}, () => ({ x: Math.random()*W, y: HZ + 2 + ((Math.random()*(SEA-HZ-3))|0), l: 2 + (Math.random()*5|0) }));
+  streaks = Array.from({length: 16}, () => ({ x: Math.random()*W, y: RT + 3 + ((Math.random()*(RE-RT-5))|0), l: 8 + (Math.random()*20|0), v: .8 + Math.random()*.6 }));
+}
+heroLayout();
+let heroVisible = true;
+new IntersectionObserver(e => { heroVisible = e[0].isIntersecting; }).observe(hero);
+
+let roadOff = 0, postOff = 0, farOff = 0, nearOff = 0, wheelA = 0, bobPh = 0, puffT = 0, ht = 0;
+function drawHero(dt, spd) {
+  ht += dt;
+  const g = hctx;
+  roadOff = (roadOff + spd*300*dt) % 960; postOff = (postOff + spd*220*dt) % 14;
+  farOff = (farOff + spd*5*dt) % 640; nearOff = (nearOff + spd*13*dt) % 640;
+  wheelA += spd*dt*40; bobPh += spd*dt*28;
+  g.drawImage(sky, 0, 0);
+  for (const c of clouds) {
+    c.x -= spd*.012*dt; if (c.x < -.2) c.x = 1.05;
+    const x0 = Math.round(c.x*W), y0 = Math.round(c.y*HZ);
+    for (const [x,y,w,h] of c.s) { g.fillStyle = '#ffe8c4'; g.fillRect(x0+x, y0+y, w, h); g.fillStyle = '#eaa59e'; g.fillRect(x0+x+1, y0+y+h-1, w-1, 1); }
+  }
+  g.fillStyle = '#7e4a7d';
+  for (let x = 0; x < W; x++) { const h = farH[(x + Math.floor(farOff)) % 640]; if (h) g.fillRect(x, HZ-h, 1, h); }
+  for (let x = 0; x < W; x++) { const h = nearH[(x + Math.floor(nearOff)) % 640]; if (h > 0) { g.fillStyle = '#4c2c60'; g.fillRect(x, HZ-h, 1, h); g.fillStyle = '#9a5a86'; g.fillRect(x, HZ-h, 1, 1); } }
+  g.drawImage(sea, 0, HZ);
+  g.fillStyle = '#ffe2a8'; g.fillRect(0, HZ, W, 1);
+  for (const s of sparkles) {
+    const dp = (s.y - HZ)/(SEA - HZ);
+    s.x -= spd*(8 + dp*40)*dt; if (s.x < -8) { s.x = W + Math.random()*20; }
+    g.fillStyle = dp < .4 ? '#efa1b2' : dp < .7 ? '#b073aa' : '#7a5498'; g.fillRect(Math.round(s.x), s.y, s.l, 1);
+  }
+  const scx = Math.round(W*(W < 300 ? .62 : .7));
+  for (let y = HZ + 1; y < SEA; y++) {
+    const dp = y - HZ, hw = 4 + dp*.7;
+    g.fillStyle = dp < 8 ? '#fff0b0' : dp < 20 ? '#ffc674' : '#f08a70';
+    for (let x = Math.floor(scx - hw); x <= scx + hw; x++) {
+      const n = Math.sin(x*.9 + y*1.7 + ht*3*Math.max(spd,.3)) * Math.sin(y*.55 - ht*2.2*Math.max(spd,.3) + x*.13);
+      if (n > .35 && (y % 2 === 0 || n > .75)) g.fillRect(x, y, 1, 1);
+    }
+  }
+  g.fillStyle = '#2e2248'; g.fillRect(0, SEA, W, RT - SEA);
+  g.fillStyle = '#d8c6e6'; g.fillRect(0, SEA+1, W, 1); g.fillStyle = '#8f7aa8'; g.fillRect(0, SEA+2, W, 1);
+  g.fillStyle = '#b7a2cc'; for (let x = -Math.round(postOff); x < W; x += 14) g.fillRect(x, SEA+1, 2, RT - SEA - 1);
+  for (let x = -Math.round(roadOff % 64); x < W; x += 64) g.drawImage(roadTile, x, RT);
+  g.fillStyle = '#4a3d6c'; g.fillRect(0, RT, W, 1);
+  const dashY = RT + Math.round((RE - RT)*.36);
+  g.fillStyle = '#f2e6c8'; for (let x = -Math.round(roadOff % 30); x < W; x += 30) g.fillRect(x, dashY, 16, 2);
+  g.fillStyle = '#bfa9d6'; g.fillRect(0, RE - 3, W, 1);
+  for (let x = -Math.round((roadOff*1.1) % 64); x < W; x += 64) g.drawImage(shTile, x, RE);
+  const sk = Math.max(0, (spd - .5)/1.2);
+  g.fillStyle = '#fff2dc';
+  streaks.forEach((s, i) => { s.x -= spd*520*s.v*dt; if (s.x + s.l < 0) { s.x = W + Math.random()*80; s.y = RT + 3 + ((Math.random()*(RE-RT-5))|0); } if (i/streaks.length < sk) g.fillRect(Math.round(s.x), s.y, s.l, 1); });
+  const carX = Math.round(W*(W < 300 ? .12 : .1)), ground = RT + Math.round((RE - RT)*.8), carY = ground - 35;
+  puffT -= dt;
+  if (puffT <= 0) { puffs.push({ x: carX + 1, y: carY + 26, life: 0, max: .4 + Math.random()*.3 }); puffT = .06/Math.max(spd, .2); }
+  for (let i = puffs.length - 1; i >= 0; i--) {
+    const p = puffs[i]; p.life += dt*Math.max(spd,.15)*1.4; p.x -= spd*110*dt + dt*6; p.y -= dt*6*Math.max(spd,.2);
+    if (p.life > p.max) { puffs.splice(i,1); continue; }
+    const f = p.life/p.max; g.fillStyle = f < .4 ? '#e7d2ea' : '#9b84b0';
+    if (f < .75 || ((Math.round(p.x)+Math.round(p.y)) & 1)) g.fillRect(Math.round(p.x), Math.round(p.y), f < .5 ? 3 : 2, f < .5 ? 3 : 2);
+  }
+  g.fillStyle = '#160f26'; g.fillRect(carX + 4, carY + 35, 96, 2); g.fillRect(carX + 10, carY + 37, 84, 1);
+  const bob = Math.sin(bobPh) > .55 ? -1 : 0;
+  g.drawImage(CAR, carX, carY + bob);
+  drawWheel(g, carX + 24, carY + 28, wheelA, spd > .9);
+  drawWheel(g, carX + 82, carY + 28, wheelA, spd > .9);
+  if (spd > .6) { g.fillStyle = '#fff6c8'; g.fillRect(carX + 103, carY + 18 + bob, 2 + (Math.random() < .5 ? 1 : 0), 1); }
+}
+
+// ================= page sky (one long dithered gradient, sunset → night → dawn) =================
+const main = document.getElementById('main');
+function paintMainSky() {
+  const w = Math.ceil(main.clientWidth/4), h = Math.ceil(main.scrollHeight/4);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'), img = g.createImageData(w, h);
+  ditherFill(img, w, 0, h, [[0,'#1d1631'],[.12,'#2b1f4e'],[.35,'#1a1230'],[.62,'#120c1f'],[.76,'#241a44'],[.84,'#56356f'],[.9,'#a2527f'],[.95,'#df7679'],[1,'#ffd890']], 3, h);
+  g.putImageData(img, 0, 0);
+  main.style.backgroundImage = `url(${c.toDataURL()})`;
+  main.style.imageRendering = 'pixelated';
+  // stars over the night stretch
+  const st = document.getElementById('stars'); st.innerHTML = '';
+  const H2 = main.scrollHeight, n = Math.round(main.clientWidth * H2 * .7 / 26000);
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('i');
+    s.style.left = (Math.random()*100) + '%'; s.style.top = (Math.random()*H2*.78) + 'px';
+    s.style.animationDelay = (-Math.random()*2.4) + 's';
+    if (Math.random() < .25) { s.style.background = '#ffd890'; }
+    if (Math.random() < .12) { s.style.width = s.style.height = '8px'; }
+    st.appendChild(s);
+  }
+}
+
+// ================= sunrise at the arrival =================
+const sunrise = document.getElementById('sunrise'), srx = sunrise.getContext('2d');
+let srBase = null;
+function paintSunrise() {
+  const w = Math.max(60, Math.ceil(sunrise.clientWidth/5)), h = Math.max(40, Math.ceil(sunrise.clientHeight/5));
+  sunrise.width = w; sunrise.height = h;
+  const img = srx.createImageData(w, h);
+  const hz = Math.round(h*.62);
+  // transparent sky; sun only, then the sea below the horizon
+  const sr = Math.round(Math.min(w*.14, h*.5)); drawSun(img, w, h, Math.round(w*.72), hz - Math.round(sr*.45), sr, hz);
+  ditherFill(img, w, hz, h, [[hz/h,'#c86f88'],[(hz/h + 1)/2,'#904f86'],[1,'#5b3a78']], 3, h);
+  srBase = img;
+  srx.putImageData(img, 0, 0);
+}
+let srT = 0;
+function drawSunrise(dt) {
+  if (!srBase) return;
+  srT += dt; srx.putImageData(srBase, 0, 0);
+  const w = sunrise.width, h = sunrise.height, hz = Math.round(h*.62), cx = Math.round(w*.72);
+  srx.fillStyle = '#ffe2a8'; srx.fillRect(0, hz, w, 1);
+  for (let y = hz + 1; y < h; y++) {
+    const dp = y - hz, hw = 3 + dp*.8; srx.fillStyle = dp < 5 ? '#fff0b0' : dp < 12 ? '#ffc674' : '#f08a70';
+    for (let x = Math.floor(cx - hw); x <= cx + hw; x++) { const n = Math.sin(x*.9 + y*1.7 + srT*2)*Math.sin(y*.55 - srT*1.6 + x*.13); if (n > .4 && (y % 2 === 0 || n > .8)) srx.fillRect(x, y, 1, 1); }
+  }
+}
+
+// ================= avatar (pixel driver in helmet) =================
+{
+  const c = document.getElementById('avatar'), g = c.getContext('2d'), img = g.createImageData(44, 52);
+  ditherFill(img, 44, 0, 52, [[0,'#56356f'],[.5,'#a2527f'],[.8,'#df7679'],[1,'#f7a46e']], 3, 52);
+  drawSun(img, 44, 52, 33, 30, 9, 52);
+  g.putImageData(img, 0, 0);
+  const P = (x,y,w,h,col) => { g.fillStyle = col; g.fillRect(x,y,w,h); };
+  // shoulders / jacket
+  P(6,40,32,12,'#1d1631'); P(8,38,28,4,'#1d1631'); P(19,40,6,12,'#f26b3a'); P(20,42,4,10,'#ffd27a');
+  // neck
+  P(18,33,8,6,'#b06a5a');
+  // helmet ramp like the sun
+  const hel = ['#ffd27a','#ff9a4a','#f26b3a','#e8384e'];
+  for (let y = 8; y < 32; y++) { const t = (y - 8)/24; for (let x = 10; x < 34; x++) { const dx = x - 22, dy = y - 21; if (dx*dx/150 + dy*dy/185 > 1) continue; g.fillStyle = hel[Math.min(3, Math.floor(t*4 + bay(x,y) - .5 < 0 ? 0 : t*4 + bay(x,y) - .5))]; g.fillRect(x,y,1,1); } }
+  P(13,17,20,7,'#24325e'); P(15,18,6,2,'#9ed2ee'); P(23,19,4,1,'#9ed2ee');
+  P(21,9,2,22,'#fff0d0');
+  P(10,25,2,4,'#1a1426');
+}
+
+// ================= engine =================
+const block = document.getElementById('block'), crank = document.getElementById('crank');
+const specs = [...document.querySelectorAll('.spec')], foEls = [...document.querySelectorAll('.fo span[data-c]')];
+const cyls = [];
+const NAMES = ['AI', 'STACK', 'DESIGN', 'INFRA'];
+for (let i = 0; i < 4; i++) {
+  const c = document.createElement('div'); c.className = 'cyl'; c.title = NAMES[i];
+  c.innerHTML = `<span class="no">${i+1}</span><canvas class="boom" width="24" height="16"></canvas><i class="valve" style="left:28%"></i><i class="valve" style="right:28%"></i><div class="rod"></div><div class="pis"></div>`;
+  c.addEventListener('click', () => select(i));
+  block.appendChild(c);
+  cyls.push({ el: c, pis: c.querySelector('.pis'), rod: c.querySelector('.rod'), boom: c.querySelector('.boom'), v: c.querySelectorAll('.valve') });
+}
+for (let i = 0; i < 4; i++) { const k = document.createElement('i'); k.style.left = (12.5 + i*25) + '%'; crank.appendChild(k); }
+const crankBits = [...crank.children];
+// paint the combustion flash with the sun's ramp
+cyls.forEach(cy => {
+  const g = cy.boom.getContext('2d'), img = g.createImageData(24, 16);
+  ditherFill(img, 24, 0, 16, [[0,'#fff3b0'],[.4,'#ffc062'],[.75,'#ff7a5c'],[1,'#e8384e']], 3, 16);
+  g.putImageData(img, 0, 0);
+});
+let sel = 0;
+function select(i) { sel = i; cyls.forEach((c,k) => c.el.classList.toggle('sel', k === i)); specs.forEach((s,k) => s.classList.toggle('sel', k === i)); }
+select(0);
+let engAng = 0, revBoost = 0;
+document.getElementById('rev').addEventListener('click', () => { revBoost = 1.6; });
+const OFFS = [0, 540, 180, 360]; // firing order 1-3-4-2: cylinder i fires at crank deg OFFS[i]
+function drawEngine(dt) {
+  revBoost = Math.max(0, revBoost - dt*.8);
+  const rpmFactor = .35 + throttle*.6 + revBoost;
+  engAng = (engAng + dt*360*rpmFactor) % 720;
+  cyls.forEach((c, i) => {
+    const a = ((engAng - OFFS[i]) % 720 + 720) % 720;  // 0 = TDC on power stroke
+    const ph = Math.cos(a/180*Math.PI);               // 1 at TDC, -1 at BDC
+    const h = c.el.clientHeight, travel = h*.42, top = 26 + (1 - ph)/2*travel;
+    c.pis.style.top = Math.round(top/4)*4 + 'px';
+    c.rod.style.top = Math.round((top + 30)/4)*4 + 'px';
+    const firing = a < 70;
+    c.boom.style.opacity = firing ? (1 - a/70) > .5 ? 1 : .55 : 0;
+    c.boom.style.height = Math.max(8, top) + 'px';
+    const intake = a >= 360 && a < 540, exhaust = a >= 180 && a < 360;
+    c.v[0].style.top = intake ? '6px' : '0px'; c.v[1].style.top = exhaust ? '6px' : '0px';
+    if (firing) foEls.forEach(f => f.classList.toggle('on', +f.dataset.c === i));
+  });
+  crankBits.forEach((b, i) => { const a = (engAng - OFFS[i])/180*Math.PI; b.style.transform = `translateY(${Math.round(Math.cos(a)*6/2)*2}px)`; });
+}
+
+// ================= billboards =================
+const ICONS = {
+  nodes: ['##........##','##........##','..#......#..','...#....#...','....####....','....####....','...#....#...','..#......#..','##........##','##........##'],
+  eye:   ['....####....','..##....##..','.#..####..#.','#..##++##..#','#..##++##..#','.#..####..#.','..##....##..','....####....'],
+  shield:['.##########.','.#++++++++#.','.#+######+#.','.#+######+#.','.#+######+#.','..#+####+#..','...#+##+#...','....#++#....','.....##.....'],
+  bolt:  ['.....####...','....####....','...####.....','..#######...','.......###..','......###...','.....###....','....##......','...#........'],
+  lock:  ['...######...','..##....##..','..#......#..','..#......#..','.##########.','.####++####.','.####++####.','.#####+####.','.##########.'],
+  twin:  ['.####..####.','#++++##++++#','#+##+##+##+#','#++++##++++#','.####..####.','..#......#..','..########..'],
+  bag:   ['....####....','...#....#...','.##########.','.#++++++++#.','.#+######+#.','.#+######+#.','.#+######+#.','.##########.'],
+  flag:  ['.#..........','.#######....','.#++#++#....','.#######....','.#++#++#....','.#######....','.#..........','.#..........','.#..........'],
+};
+const PROJECTS = [
+  { n:'24LLM', km:'KM 012', t:'PROMPT → WORKFLOW', d:'A compiler that turns plain-language prompts into runnable workflows, with its own Next.js launch site.', s:['COMPILER','NEXT.JS','LLM'], i:'nodes', sky:[[0,'#2b1f4e'],[.6,'#6c3f88'],[1,'#ff8a5a']] },
+  { n:'ALETHEIA', km:'KM 047', t:'FACT-CHECK ENGINE', d:'Multi-agent fact-checking with verdicts anchored on the Aptos blockchain. Co-built with Megh Vyas.', s:['MULTI-AGENT','APTOS'], i:'eye', sky:[[0,'#1d1631'],[.5,'#56356f'],[1,'#df7679']] },
+  { n:'MIRAGE', km:'KM 093', t:'ZCASH SEND GUARD', d:'A send guard for Zcash wallets, built at Free Society Hack 2026 in the Privacy track. I built the UI.', s:['ZCASH','PRIVACY','UI'], i:'shield', sky:[[0,'#120c1f'],[.5,'#2b1f4e'],[1,'#a2527f']] },
+  { n:'ZEUS', km:'KM 131', t:'SELF-HEALING CI/CD', d:'An autonomous agent that spots failing pipelines and patches them back to green.', s:['LANGGRAPH','DEVOPS'], i:'bolt', sky:[[0,'#2b1f4e'],[.5,'#a2527f'],[1,'#ffd890']] },
+  { n:'ZTA-AI', km:'KM 178', t:'ZERO-TRUST AI', d:'An enterprise AI platform where every request is checked against RBAC and ABAC policy.', s:['SECURITY','RBAC/ABAC'], i:'lock', sky:[[0,'#1d1631'],[.6,'#6c3f88'],[1,'#c86f88']] },
+  { n:'TWIN', km:'KM 204', t:'PERSONAL COGNITIVE AI', d:'A personal AI that thinks alongside me, built on AISL, my own token-efficient memory layer.', s:['MEMORY','AISL'], i:'twin', sky:[[0,'#56356f'],[.5,'#df7679'],[1,'#ffd890']] },
+  { n:'PROVISIONS', km:'KM 256', t:'CAMPUS QUICK-COMMERCE', d:'A Zepto-style grocery delivery PWA for a student campus, built with a five-person team.', s:['FASTIFY','PRISMA','POSTGRES','OCI'], i:'bag', sky:[[0,'#2b1f4e'],[.5,'#904f86'],[1,'#f7a46e']] },
+  { n:'ARMY MARATHON', km:'KM 300', t:'EVENT TICKETING', d:'The ticketing platform for the Indian Army Marathon.', s:['TICKETING','PAYMENTS'], i:'flag', sky:[[0,'#1d1631'],[.55,'#a2527f'],[1,'#ff8a5a']] },
+];
+const boards = document.getElementById('boards');
+const posters = [];
+PROJECTS.forEach((p, idx) => {
+  const el = document.createElement('article'); el.className = 'bb reveal';
+  el.innerHTML = `<span class="km">${p.km}</span><div class="face"><div class="lights"><i></i><i></i><i></i></div><canvas width="96" height="54"></canvas><div class="txt"><span class="tagline">${p.t}</span><h3>${p.n}</h3><p>${p.d}</p>${p.s.map(s => `<span class="chip">${s}</span>`).join('')}</div></div><div class="posts"><i></i><i></i></div>`;
+  boards.appendChild(el);
+  const cv = el.querySelector('canvas'), g = cv.getContext('2d'), img = g.createImageData(96, 54);
+  ditherFill(img, 96, 0, 54, p.sky, 3, 54);
+  drawSun(img, 96, 54, 70, 40, 15, 44);
+  ditherFill(img, 96, 44, 54, [[44/54,'#3a2a60'],[1,'#1d1631']], 2, 54);
+  g.putImageData(img, 0, 0);
+  posters.push({ g, base: img, icon: ICONS[p.i], ph: idx*.7, el });
+});
+function drawPosters(t) {
+  for (const p of posters) {
+    if (!p.vis) continue;
+    p.g.putImageData(p.base, 0, 0);
+    const sc = 3, ic = p.icon, w = ic[0].length*sc, x0 = 14, y0 = Math.round(8 + Math.sin(t*2 + p.ph)*2);
+    for (let y = 0; y < ic.length; y++) for (let x = 0; x < ic[y].length; x++) {
+      const ch = ic[y][x]; if (ch === '.') continue;
+      p.g.fillStyle = '#0d0918'; p.g.fillRect(x0 + x*sc + 1, y0 + y*sc + 1, sc, sc);
+    }
+    for (let y = 0; y < ic.length; y++) for (let x = 0; x < ic[y].length; x++) {
+      const ch = ic[y][x]; if (ch === '.') continue;
+      p.g.fillStyle = ch === '+' ? '#ffd84a' : '#fff0d0'; p.g.fillRect(x0 + x*sc, y0 + y*sc, sc, sc);
+    }
+    // a little car passing under each billboard
+    const cx = Math.round(((t*30 + p.ph*40) % 140) - 30);
+    p.g.fillStyle = '#f26b3a'; p.g.fillRect(cx, 46, 10, 3); p.g.fillStyle = '#ffd27a'; p.g.fillRect(cx + 3, 44, 5, 2);
+    p.g.fillStyle = '#1a1426'; p.g.fillRect(cx + 1, 49, 2, 2); p.g.fillRect(cx + 7, 49, 2, 2);
+    p.g.fillStyle = '#fff6c8'; p.g.fillRect(cx + 10, 46, 1, 1);
+  }
+}
+const pio = new IntersectionObserver(es => es.forEach(e => { const p = posters.find(q => q.el === e.target); if (p) p.vis = e.isIntersecting; }));
+posters.forEach(p => pio.observe(p.el));
+
+// ================= small sprites: header mini car, route car =================
+{
+  const m = document.getElementById('mini').getContext('2d');
+  m.drawImage(CAR, 0, 0, 104, 37, 0, 0, 22, 8);
+  const r = document.getElementById('routeCar'), g = r.getContext('2d');
+  // top-down car
+  const P = (x,y,w,h,c) => { g.fillStyle = c; g.fillRect(x,y,w,h); };
+  P(0,4,2,4,'#1a1426'); P(9,4,2,4,'#1a1426'); P(0,15,2,4,'#1a1426'); P(9,15,2,4,'#1a1426');
+  P(1,1,9,21,'#e8384e'); P(1,1,9,14,'#f26b3a'); P(2,1,7,6,'#ffd27a');
+  P(2,7,7,4,'#24325e'); P(2,16,7,3,'#24325e'); P(5,1,1,21,'#fff0d0');
+  P(1,0,2,1,'#fff6c8'); P(8,0,2,1,'#fff6c8'); P(1,21,2,1,'#ff3b5c'); P(8,21,2,1,'#ff3b5c');
+}
+
+// ================= speedometer (fixed) =================
+const sctx = document.getElementById('speedo').getContext('2d');
+function speedo(frac) {
+  const g = sctx; g.clearRect(0,0,48,48);
+  const cx = 24, cy = 24, r = 22;
+  pixelCircle(g, cx, cy, r, '#8fd3ff'); pixelCircle(g, cx, cy, r-1, '#0f0a1e');
+  g.fillStyle = '#0f0a1e'; for (let a = 0; a < Math.PI*2; a += .36) g.fillRect(Math.round(cx + Math.cos(a)*r), Math.round(cy + Math.sin(a)*r), 1, 1);
+  const a0 = Math.PI*.75, sw = Math.PI*1.5;
+  for (let i = 0; i <= 12; i++) { const a = a0 + sw*i/12; g.fillStyle = i >= 10 ? '#ff4d4d' : '#57e36f'; g.fillRect(Math.round(cx + Math.cos(a)*18), Math.round(cy + Math.sin(a)*18), 1, 1); }
+  const na = a0 + sw*frac; g.fillStyle = '#fff';
+  for (let k = 0; k <= 14; k++) g.fillRect(Math.round(cx + Math.cos(na)*k), Math.round(cy + Math.sin(na)*k), 1, 1);
+  pixelCircle(g, cx, cy, 1, '#fff');
+}
+
+// ================= HUD bits =================
+const barsEl = document.getElementById('bars');
+for (let i = 0; i < 15; i++) { const b = document.createElement('i'); if (i >= 13) b.className = 'r'; barsEl.appendChild(b); }
+const barEls = [...barsEl.children];
+const rpmEl = document.getElementById('rpm'), kmhEl = document.getElementById('kmh');
+const odoEls = [0,1,2,3].map(i => document.getElementById('o'+i));
+const odom = [...document.querySelectorAll('#odom span')];
+const mini = document.getElementById('mini'), strip = mini.parentElement;
+const gearLinks = [...document.querySelectorAll('#gears a')];
+const stops = [...document.querySelectorAll('[data-gear]')];
+const routeWrap = document.getElementById('routeWrap'), routeCar = document.getElementById('routeCar');
+const litEl = document.getElementById('lit'), ideEl = document.getElementById('ide');
+let fuel = 0, ideas = 0, pumpOn = false;
+new IntersectionObserver(e => { pumpOn = e[0].isIntersecting; }, { threshold: .3 }).observe(document.querySelector('.pump'));
+
+// reveal on scroll
+const rio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.reveal').forEach(el => rio.observe(el));
+// garage doors roll up as you pass on touch screens
+if (matchMedia('(hover: none)').matches) {
+  const gio = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('open', e.isIntersecting)), { threshold: .7 });
+  document.querySelectorAll('.bay').forEach(b => gio.observe(b));
+}
+
+function updateHud() {
+  const max = document.documentElement.scrollHeight - innerHeight, prog = max > 0 ? scrollY/max : 0;
+  mini.style.left = Math.round(prog*(strip.clientWidth - 44)) + 'px';
+  const km = String(Math.round(prog*720)).padStart(4, '0');
+  odoEls.forEach((e,i) => e.textContent = km[i]);
+  let g = 0; stops.forEach((s, i) => { if (s.getBoundingClientRect().top < innerHeight*.45) g = i; });
+  gearLinks.forEach((a, i) => a.classList.toggle('on', i === g));
+  // route odometer + car along the route road
+  const r = routeWrap.getBoundingClientRect();
+  const rp = Math.min(1, Math.max(0, (innerHeight*.55 - r.top) / r.height));
+  routeCar.style.top = Math.round(rp*(r.height - 60)/4)*4 + 'px';
+  const rk = String(Math.round(rp*600)).padStart(4,'0'); odom.forEach((e,i) => e.textContent = rk[i]);
+}
+
+// ================= main loop =================
+let last = performance.now(), heroSpd = .5, needle = 0;
+function loop(now) {
+  const dt = Math.min(.05, (now - last)/1000); last = now;
+  vel *= Math.pow(.02, dt);                      // decay scroll impulse
+  throttle += (Math.min(1, vel/40) - throttle) * Math.min(1, dt*4);
+  const target = reduced ? .3 : .45 + throttle*1.4;
+  heroSpd += (target - heroSpd) * Math.min(1, dt*2.5);
+  if (heroVisible) drawHero(dt, heroSpd);
+  drawEngine(dt);
+  drawPosters(now/1000);
+  drawSunrise(dt);
+  const kmh = Math.round(40 + throttle*200 + revBoost*40);
+  needle += (Math.min(1, kmh/260) - needle)*Math.min(1, dt*6);
+  speedo(needle); kmhEl.textContent = kmh;
+  const rpm = Math.round((1800 + throttle*4600 + revBoost*1500 + (Math.random()-.5)*60)/10)*10;
+  rpmEl.textContent = rpm.toLocaleString('en-US');
+  const lit = Math.round(rpm/7000*15); barEls.forEach((b,i) => b.classList.toggle('on', i < lit));
+  if (pumpOn) { fuel = Math.min(99.99, fuel + dt*7.3); ideas = Math.min(999, ideas + dt*31); litEl.textContent = fuel.toFixed(2).padStart(5,'0'); ideEl.textContent = String(Math.floor(ideas)).padStart(3,'0'); }
+  updateHud();
+  requestAnimationFrame(loop);
+}
+
+function layoutAll() { heroLayout(); paintMainSky(); paintSunrise(); }
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layoutAll, 150); });
+paintMainSky(); paintSunrise();
+document.fonts && document.fonts.ready.then(() => { paintMainSky(); });
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
