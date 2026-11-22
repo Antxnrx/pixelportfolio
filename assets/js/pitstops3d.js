@@ -353,7 +353,9 @@ function select(i) {
   i = (i + N) % N; if (i === cur) return; cur = i; tx = i*SP;
   const p = PROJ[i];
   tabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', k === i); });
-  tabs[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  // centre the tab inside the strip only — scrollIntoView would also scroll the page (and did, on load via select(0))
+  const tr = tabs[i].getBoundingClientRect(), cr = citiesEl.getBoundingClientRect();
+  citiesEl.scrollTo({ left: citiesEl.scrollLeft + tr.left - cr.left - (cr.width - tr.width)/2, behavior: 'smooth' });
   idxEl.textContent = `${String(i + 1).padStart(2, '0')}/${String(N).padStart(2, '0')}`;
   card.innerHTML = `<span class="loc">📍 ${p.city}, ${p.cc} · LOT ${String(i + 1).padStart(2, '0')}</span>
     <span class="tagline">${p.t}</span><h3>${p.n}</h3><p>${p.d}</p>
