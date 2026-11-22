@@ -2,6 +2,5 @@
 .playwright-mcp/
 .DS_Store
 
-# Standalone prototypes (kept in place, not deployed)
-Anton Raj Singh — The Coast Road.html
-Pixel Cruiser 3D.html
+# Standalone prototypes (kept in the repo, not deployed)
+prototypes/
