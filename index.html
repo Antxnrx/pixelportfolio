@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anton Raj Singh — The Coast Road</title>
+<meta name="description" content="Anton Raj Singh — founder of Aexiz Solutions and D2C. Full-stack developer building AI systems, software, onchain products and design, from Bangalore.">
+<meta name="author" content="Anton Raj Singh">
+<meta name="theme-color" content="#120c1f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anton Raj Singh — The Coast Road">
+<meta property="og:description" content="Founder of Aexiz Solutions and D2C. AI systems, software, onchain and design, from Bangalore.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@whereizanton">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%23120c1f'/%3E%3Crect x='2' y='8' width='12' height='3' fill='%23f26b3a'/%3E%3Crect x='5' y='5' width='6' height='3' fill='%23ffd27a'/%3E%3Crect x='3' y='11' width='3' height='2' fill='%231a1426'/%3E%3Crect x='10' y='11' width='3' height='2' fill='%231a1426'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#driver">Skip to content</a>
+
+<header class="dash">
+  <div class="dash-row">
+    <a class="logo" href="#start">A.R.S</a>
+    <nav class="gears" id="gears">
+      <a href="#start"><b>1</b><span>START</span></a>
+      <a href="#driver"><b>2</b><span>DRIVER</span></a>
+      <a href="#engine"><b>3</b><span>ENGINE</span></a>
+      <a href="#pitstops"><b>4</b><span>PIT STOPS</span></a>
+      <a href="#route"><b>5</b><span>ROUTE</span></a>
+      <a href="#garage"><b>6</b><span>GARAGE</span></a>
+      <a href="#arrive"><b>7</b><span>ARRIVE</span></a>
+    </nav>
+    <div class="odo">ODO<span id="o0">0</span><span id="o1">0</span><span id="o2">0</span><span id="o3">0</span> KM</div>
+  </div>
+  <div class="strip"><div class="dashes"></div><canvas class="mini" id="mini" width="22" height="7"></canvas></div>
+</header>
+
+<section id="start" data-gear="1">
+  <canvas id="hero" aria-label="Pixel-art 3D sunset drive along a coastal road"></canvas>
+  <div class="hud box y h-tag">NOW DRIVING<div class="blk"><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="hud box h-rpm"><b id="rpm">2,400</b> RPM<div class="bars" id="bars"></div></div>
+  <div class="hud box h-name"><h1 class="hn"><span>ANTON</span><span class="y">RAJ SINGH</span></h1></div>
+  <div class="hud box y h-sub">FOUNDER · AEXIZ SOLUTIONS &amp; D2C — AI SYSTEMS, SOFTWARE &amp; DESIGN. BANGALORE.</div>
+  <div class="hud box y h-cue">▼ SCROLL = THROTTLE ▼</div>
+</section>
+
+<main id="main">
+  <div class="stars" id="stars"></div>
+
+  <section class="stop" id="driver" data-gear="2">
+    <div class="sign reveal"><span class="gear">GEAR 2</span><h2>THE <em>DRIVER</em></h2><p>Who's behind the wheel.</p></div>
+    <div class="box licence reveal">
+      <canvas id="avatar" width="44" height="52" aria-label="Pixel portrait"></canvas>
+      <div class="lic-f">
+        <div><small>NAME</small>ANTON RAJ SINGH</div>
+        <div><small>CLASS</small>FOUNDER &amp; CEO, AEXIZ</div>
+        <div><small>ALSO FOUNDED</small>D2C · BY AEXIZ</div>
+        <div><small>HOME GARAGE</small>BANGALORE, IN</div>
+        <div><small>LICENSED SINCE</small>~2021 · SELF-TAUGHT</div>
+        <div><small>SCHOOL</small>BTECH · VIJAYBHOOMI UNIV.</div>
+        <div><small>VALID THRU</small>CLASS OF 2027</div>
+        <p class="lic-bio">Full-stack developer who started out in graphic design, video editing and multimedia, and now builds AI systems, products and automation for clients and for himself. Drawn to deep-learning theory, AI architecture and the philosophy of mind, and wants things shipped in days, not quarters.</p>
+        <div class="lic-soc">
+          <small>FIND THE DRIVER</small>
+          <a class="soc" href="https://github.com/antxnrx" target="_blank" rel="noopener me" aria-label="GitHub: antxnrx"><i data-ic="gh"></i><span>GITHUB<b>@ANTXNRX</b></span></a>
+          <a class="soc" href="https://www.linkedin.com/in/anton-raj-singh/" target="_blank" rel="noopener me" aria-label="LinkedIn: Anton Raj Singh"><i data-ic="li"></i><span>LINKEDIN<b>ANTON-RAJ-SINGH</b></span></a>
+          <a class="soc" href="https://x.com/whereizanton" target="_blank" rel="noopener me" aria-label="X: whereizanton"><i data-ic="x"></i><span>X<b>@WHEREIZANTON</b></span></a>
+        </div>
+        <div class="barcode"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="engine" data-gear="3">
+    <div class="sign reveal"><span class="gear">GEAR 3</span><h2>UNDER THE <em>HOOD</em></h2><p>Four cylinders, one firing order. Each one is a skill set. Click a cylinder to inspect it.</p></div>
+    <div class="box engine reveal">
+      <div class="fo"><span class="lab">FIRING ORDER</span><span data-c="0">1</span><span data-c="2">3</span><span data-c="3">4</span><span data-c="1">2</span><button id="rev">REV IT ▲</button></div>
+      <div class="block" id="block"></div>
+      <div class="crank" id="crank"></div>
+      <div class="specs" id="specs">
+        <div class="spec"><h3>01 · AI SYSTEMS</h3><span class="chip">LANGGRAPH</span><span class="chip">MULTI-AGENT</span><span class="chip">MEMORY LAYERS</span><span class="chip">RBAC / ABAC</span></div>
+        <div class="spec"><h3>02 · FULL-STACK</h3><span class="chip">NEXT.JS</span><span class="chip">TYPESCRIPT</span><span class="chip">FASTIFY</span><span class="chip">PRISMA</span><span class="chip">POSTGRESQL</span></div>
+        <div class="spec"><h3>03 · DESIGN &amp; MEDIA</h3><span class="chip">UI DESIGN</span><span class="chip">GRAPHIC DESIGN</span><span class="chip">VIDEO EDITING</span><span class="chip">CSS MOTION</span><span class="chip">THREE.JS</span></div>
+        <div class="spec"><h3>04 · INFRA &amp; WEB3</h3><span class="chip">OCI</span><span class="chip">GOOGLE CLOUD</span><span class="chip">CADDY · PM2</span><span class="chip">APTOS</span><span class="chip">ZCASH</span><span class="chip">LAYERZERO</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="pitstops" data-gear="4">
+    <div class="sign reveal"><span class="gear">GEAR 4</span><h2>PIT <em>STOPS</em></h2><p>Ten builds, parked around the world. Pick a city and the camera drives you there.</p></div>
+    <div class="box tour reveal" id="tour">
+      <div class="tour-bar"><span class="lab">DEPARTURES</span><div class="cities" id="cities" role="tablist" aria-label="Cities"></div></div>
+      <div class="tour-stage" id="tourStage" tabindex="0" aria-label="3D world tour of projects. Use left and right arrow keys to change city.">
+        <canvas id="tourGl"></canvas>
+        <div class="tour-card box y" id="tourCard" aria-live="polite"></div>
+        <div class="tour-nav"><button type="button" id="tPrev" aria-label="Previous city">◀</button><span id="tIdx">01/10</span><button type="button" id="tNext" aria-label="Next city">▶</button></div>
+        <div class="tour-hint">DRAG TO LOOK · ◀ ▶ TO DRIVE</div>
+      </div>
+    </div>
+    <h3 class="sub-h reveal">THE <em>BILLBOARDS</em></h3>
+    <div class="boards" id="boards"></div>
+  </section>
+
+  <section class="stop" id="route" data-gear="5">
+    <div class="sign reveal"><span class="gear">GEAR 5</span><h2>ROUTE <em>LOG</em></h2><p>The trip so far, logged by odometer.</p></div>
+    <div class="box odom reveal" id="odom"><span>0</span><span>0</span><span>0</span><span>0</span><small>KM DRIVEN</small></div>
+    <div class="route" id="routeWrap">
+      <div class="road"></div>
+      <canvas id="routeCar" width="11" height="22"></canvas>
+      <div class="box leg reveal"><span class="mk">KM 000</span><h3>STARTED FREELANCING</h3><p>Self-taught. Graphic design, video editing and multimedia first, then code.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 120</span><h3>CLIENT WEBSITES</h3><p>MY SALON Koramangala, Greenr Cafe Delhi, Crest Painting Co. Toronto, ARTÉ Studio and more.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 240</span><h3>GOOGLE CLOUD ARCADE FACILITATOR</h3><p>Three cycles, 1,000+ students guided through Google Cloud.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 360</span><h3>INDIAN ARMY MARATHON</h3><p>Built the event's ticketing platform.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 480</span><h3>FOUNDED AEXIZ SOLUTIONS</h3><p>A Bangalore studio for AI systems, software, automation and design.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 540</span><h3>FOUNDED D2C · BY AEXIZ</h3><p>FMCG delivery for places logistics forgot. Now live across Vijaybhoomi University at <a href="https://d2c.aexiz.in" target="_blank" rel="noopener">d2c.aexiz.in</a>.</p></div>
+      <div class="box leg reveal"><span class="mk">KM 600</span><h3>FREE SOCIETY HACK 2026</h3><p>Built the UI for Mirage, a Zcash send guard, in the Privacy track.</p></div>
+      <div class="box y leg next reveal"><span class="mk">NEXT EXIT</span><h3>BTECH · CLASS OF 2027</h3><p>VijayBhoomi University. The road keeps going.</p></div>
+    </div>
+  </section>
+
+  <section class="stop" id="garage" data-gear="6">
+    <div class="sign reveal"><span class="gear">GEAR 6</span><h2>THE <em>GARAGE</em></h2><p>Where client builds get done. One car per bay. Hover to roll the door all the way up.</p></div>
+    <div class="box garage reveal">
+      <div class="bay"><div class="shot"><canvas aria-hidden="true"></canvas><i class="lamp"></i><div class="door"><span>BAY 1</span></div></div><div class="info"><h3><span>◆</span>AI SYSTEMS</h3><p>Agents, retrieval, memory and workflow automation.</p></div></div>
+      <div class="bay"><div class="shot"><canvas aria-hidden="true"></canvas><i class="lamp"></i><div class="door"><span>BAY 2</span></div></div><div class="info"><h3><span>&lt;/&gt;</span>SOFTWARE</h3><p>Web apps, PWAs and platforms, from schema to deploy.</p></div></div>
+      <div class="bay"><div class="shot"><canvas aria-hidden="true"></canvas><i class="lamp"></i><div class="door"><span>BAY 3</span></div></div><div class="info"><h3><span>⚙</span>AUTOMATION</h3><p>Pipelines that take repetitive work off your hands.</p></div></div>
+      <div class="bay"><div class="shot"><canvas aria-hidden="true"></canvas><i class="lamp"></i><div class="door"><span>BAY 4</span></div></div><div class="info"><h3><span>✎</span>DESIGN</h3><p>Brand, UI, labels, motion and video.</p></div></div>
+    </div>
+    <a class="cta" href="https://aexiz.in" target="_blank" rel="noopener">VISIT AEXIZ.IN ▶</a>
+  </section>
+
+  <section class="stop" id="arrive" data-gear="7">
+    <div class="sign reveal"><span class="gear">GEAR 7</span><h2>YOU'VE <em>ARRIVED</em></h2><p>Last stop: the fuel station. Got a project that needs a driver?</p></div>
+    <div class="station reveal">
+      <div class="pump"><div class="scr">LITRES<br><b id="lit">00.00</b><br>IDEAS<br><b id="ide">000</b></div><div class="nozzle"></div><div class="base"></div></div>
+      <div class="box contact">
+        <h3>LET'S BUILD <em>SOMETHING FAST.</em></h3>
+        <p>Open for AI systems, product builds and design work through Aexiz.</p>
+        <p>Find the studio at <a href="https://aexiz.in" target="_blank" rel="noopener">aexiz.in</a></p>
+        <a class="cta" href="https://aexiz.in/support/project-inquiry" target="_blank" rel="noopener">FUEL UP A PROJECT ▶</a>
+        <div class="links">
+          <a href="https://github.com/Antxnrx" target="_blank" rel="noopener me">GITHUB</a>
+          <a href="https://www.linkedin.com/in/anton-raj-singh/" target="_blank" rel="noopener me">LINKEDIN</a>
+          <a href="https://x.com/whereizanton" target="_blank" rel="noopener me">X · @WHEREIZANTON</a>
+          <a href="https://d2c.aexiz.in" target="_blank" rel="noopener">D2C</a>
+          <a href="https://24llm.com" target="_blank" rel="noopener">24LLM</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <canvas id="sunrise"></canvas>
+  <canvas id="bunk" aria-label="Pixel-art 3D petrol bunk at sunrise with a sports coupe parked at the pump"></canvas>
+  <footer>© ANTON RAJ SINGH · BUILT IN BANGALORE · NO PIXELS WERE ANTI-ALIASED</footer>
+</main>
+
+<div class="speedo" aria-hidden="true"><small>KM/H</small><canvas id="speedo" width="48" height="48"></canvas><b id="kmh">0</b></div>
+
+<script src="assets/js/data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/three-kit.js"></script>
+<script src="assets/js/hero3d.js"></script>
+<script src="assets/js/pitstops3d.js"></script>
+<script src="assets/js/avatar3d.js"></script>
+<script src="assets/js/engine3d.js"></script>
+<script src="assets/js/bunk3d.js"></script>
+<script src="assets/js/garage3d.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
